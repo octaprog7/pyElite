@@ -50,7 +50,7 @@ pyelite = "game_loop:main"
 pyelite-tui = "elite_tui:main"
 
 [project.urls]
-"Homepage" = "https://github.com/pyelite/pyelite"
+"Homepage" = "https://github.com/octaprog7/pyElite"
 "Bug Tracker" = "https://github.com/pyelite/pyelite/issues"
 
 # ---------------------------------------------------------------------------
