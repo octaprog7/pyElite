@@ -1,0 +1,130 @@
+# pyproject.toml — pyElite
+# SPDX-License-Identifier: GPL-3.0-only
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyelite"
+version = "0.1.0"
+description = "Deterministic Python port of Elite (BBC Micro / C64, 1984) — galaxy generation, market, hyperspace jumps, ship defense, combat."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+authors = [
+    {name = "pyElite contributors"},
+]
+keywords = ["elite", "game", "simulation", "retro", "bbc-micro", "c64"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Games/Entertainment :: Simulation",
+    "Typing :: Typed",
+]
+
+# Текстовая часть (CLI/TUI) не требует pygame/numpy.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "textual>=1.0",
+]
+tui = [
+    "textual>=1.0",
+]
+
+[project.scripts]
+pyelite = "game_loop:main"
+pyelite-tui = "elite_tui:main"
+
+[project.urls]
+"Homepage" = "https://github.com/pyelite/pyelite"
+"Bug Tracker" = "https://github.com/pyelite/pyelite/issues"
+
+# ---------------------------------------------------------------------------
+# setuptools — flat layout, explicit module list
+# ---------------------------------------------------------------------------
+
+[tool.setuptools]
+py-modules = [
+    "elite_core",
+    "elite_galaxy_generator",
+    "elite_trading",
+    "elite_jumps",
+    "elite_analytics",
+    "elite_i18n",
+    "elite_backend",
+    "elite_renderer_cli",
+    "elite_audio_null",
+    "elite_line_editor",
+    "elite_autopilot",
+    "game_loop",
+    "elite_tui",
+]
+
+# ---------------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+python_files = ["test_*.py"]
+
+# ---------------------------------------------------------------------------
+# mypy — strict
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+no_implicit_reexport = true
+files = [
+    "elite_core.py",
+    "elite_galaxy_generator.py",
+    "elite_trading.py",
+    "elite_jumps.py",
+    "elite_analytics.py",
+    "elite_i18n.py",
+    "elite_backend.py",
+    "elite_renderer_cli.py",
+    "elite_audio_null.py",
+    "elite_line_editor.py",
+    "elite_autopilot.py",
+    "game_loop.py",
+]
+
+# ---------------------------------------------------------------------------
+# ruff
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
