@@ -51,7 +51,7 @@ pyelite-tui = "elite_tui:main"
 
 [project.urls]
 "Homepage" = "https://github.com/octaprog7/pyElite"
-"Bug Tracker" = "https://github.com/pyelite/pyelite/issues"
+"Bug Tracker" = "https://github.com/octaprog7/pyElite/issues"
 
 # ---------------------------------------------------------------------------
 # setuptools — flat layout, explicit module list
