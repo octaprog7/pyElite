@@ -20,4 +20,5 @@ else
     exit 1
 fi
 
-exec "$PY" elite_tui.py
+# Все аргументы (например, --lang en) передаются в elite_tui.py.
+exec "$PY" elite_tui.py "$@"

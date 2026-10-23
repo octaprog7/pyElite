@@ -214,6 +214,118 @@ EN: Dict[str, str] = {
     "tui.qty.invalid": "Invalid number!",
     "tui.qty.positive": "Quantity must be > 0!",
     "tui.trade.failed": "Trade failed: {exc}",
+
+    # --- TUI: общие кнопки и колонки ---
+    "tui.btn.close": "Close [Esc]",
+    "tui.btn.cancel": "Cancel [Esc]",
+    "tui.btn.done": "Done [Esc]",
+    "tui.btn.buy": "Buy [Enter]",
+    "tui.btn.buy_max": "Buy max",
+    "tui.btn.sell": "Sell [Enter]",
+    "tui.btn.sell_all": "Sell all",
+    "tui.btn.attack": "Attack [a]",
+    "tui.btn.flee": "Flee [f]",
+    "tui.btn.surrender": "Surrender [u]",
+    "tui.btn.new_game": "New game [n]",
+    "tui.btn.quit": "Quit [q]",
+    "tui.btn.save": "Save [Enter]",
+    "tui.btn.load": "Load [Enter]",
+    "tui.col.commodity": "Commodity",
+    "tui.col.price": "Price Cr",
+    "tui.col.avail": "Avail",
+    "tui.col.in_hold": "In hold",
+    "tui.col.hold": "Hold",
+    "tui.col.system": "System",
+    "tui.col.ly": "ly",
+    "tui.col.fuel": "Fuel",
+    "tui.col.economy": "Economy",
+    "tui.col.gov": "Gov",
+    "tui.col.risk": "Risk",
+    "tui.col.file": "File",
+    "tui.col.size": "Size",
+    "tui.col.modified": "Modified",
+
+    # --- TUI: покупка ---
+    "tui.buy.title": "MARKET — select a row, enter quantity, Enter (dialog stays open after purchase)",
+    "tui.buy.qty_placeholder": "Quantity (e.g. 5)",
+    "tui.buy.max_entered": "Max available: {mx} (you entered {qty})",
+    "tui.buy.done": "Bought {qty} {name} for {cost:.2f} Cr",
+    "tui.buy.unavailable": "{name}: not available for purchase (credits {credits:.1f})",
+
+    # --- TUI: продажа ---
+    "tui.sell.title": "HOLD — select cargo, enter quantity, Enter (dialog stays open after sale)",
+    "tui.sell.qty_placeholder": "Quantity",
+    "tui.sell.empty": "Hold is empty — nothing to sell!",
+    "tui.sell.only_hold": "Only {hold} in hold (you entered {qty})",
+    "tui.sell.done": "Sold {qty} {name} for {income:.2f} Cr",
+    "tui.sell.failed": "Selling {name} failed: {exc}",
+    "tui.sell.all_done": "Sold all: +{total:.2f} Cr",
+    "tui.sell.all_done_profit": "Sold all: +{total:.2f} Cr (profit {profit:+.2f} Cr)",
+    "tui.sell.all_done_info": "All cargo sold: +{total:.2f} Cr",
+    "tui.sell.all_done_info_profit": "All cargo sold: +{total:.2f} Cr, profit {profit:+.2f} Cr",
+
+    # --- TUI: прыжок ---
+    "tui.jump.title": "GALAXY MAP — select a system (click or Enter)",
+    "tui.jump.empty": "No reachable systems",
+
+    # --- TUI: бой ---
+    "tui.combat.title": "⚠ PIRATE ATTACK!",
+    "tui.combat.info": "System: {name} ({gov})\nShields F:{fsh}/255 A:{ash}/255  Energy: {eng}\nCredits: {credits:.1f} Cr\nCargo: {cargo}/{hold}t",
+    "tui.combat.log": "Combat ({action}): {message}",
+
+    # --- TUI: конец игры ---
+    "tui.gameover.title": "💀 SHIP DESTROYED 💀",
+    "tui.gameover.text": "Game over.",
+    "tui.gameover.log": "SHIP DESTROYED!",
+
+    # --- TUI: инфо о системе ---
+    "tui.info.title": "{name} (Galaxy {galaxy})",
+    "tui.info.body": "Economy: {economy}\nGovernment: {gov}\nTech level: {tech}\nPopulation: {pop:.1f} billion\nShields F:{fsh}/255 A:{ash}/255  Energy: {eng}\n\n{description}",
+
+    # --- TUI: файлы ---
+    "tui.file.save_title": "SAVE GAME (.elite)",
+    "tui.file.load_title": "LOAD GAME (.elite)",
+    "tui.file.name_placeholder": "File name (e.g. mysave.elite)",
+    "tui.file.name_required": "Enter a file name!",
+    "tui.file.name_invalid": "Invalid name: use a name without paths or slashes!",
+
+    # --- TUI: справка ---
+    "tui.help.title": "HELP — ELITE: HARMLESS",
+    "tui.help.text": "CONTROLS\n  b — buy commodity          s — sell commodity\n  «Sell all» in the sell dialog — sell the whole hold\n  unconditionally at current system prices\n  Double-click a commodity in the MARKET list — buy dialog\n  for that commodity (the dialog has a «Buy max» button)\n  j — jump to system          i — system description\n  h — this help               r — refuel to full\n  w — wait a turn (shields +1)  q — quit\n  F5 — quick save             F9 — quick load (quicksave.elite)\n  F2 — save to file           F3 — load (*.elite)\n  F4 — session trade log\n  In dialogs: Esc — cancel, Ctrl+Z — undo last trade\n  In combat: a — attack, f — flee, u — surrender\n\nHOW TO PLAY\n  The goal is to earn credits: buy commodities cheap and sell\n  them at a higher price in another system. A jump consumes\n  fuel (0.2 Cr per unit); refuelling is always to a full tank.\n  Market and danger depend on the system government: pirates\n  often attack in anarchies. Attack is risky with weak shields,\n  escape is more successful with a full tank, surrender means\n  losing cargo and part of the credits.\n  «Alien goods» are not available on the market.\n\nSAVES AND LOG\n  quicksave.elite — F5/F9 keys; named saves — *.elite (F2/F3).\n  All game events are written to the elite_events.db database.",
+
+    # --- TUI: главное окно ---
+    "tui.panel.market": "MARKET",
+    "tui.panel.galaxy": "GALAXY MAP",
+    "tui.btn.buy_key": "Buy [b]",
+    "tui.btn.sell_key": "Sell [s]",
+    "tui.btn.jump_key": "Jump [j]",
+    "tui.btn.refuel_key": "Refuel [r]",
+    "tui.btn.wait_key": "Wait [w]",
+    "tui.btn.help_key": "Help [h]",
+    "tui.btn.trades_key": "Trades [F4]",
+    "tui.btn.quit_key": "Quit [q]",
+    "tui.welcome": "Welcome to pyElite!",
+    "tui.start": "Start: {name} (Galaxy {galaxy})",
+    "tui.keys_hint": "Keys: b=buy s=sell j=jump i=info h=help r=refuel w=wait q=quit | F5/F9 quick save/load, F2/F3 files (.elite)",
+
+    # --- TUI: статус-бар ---
+    "tui.status.bar": "Cr: {credits:.1f}  |  Fuel: {fuel}/{max}  |  Cargo: {cargo}/{hold}t  |  Shields F:{fsh} A:{ash}  Energy: {eng}",
+
+    # --- TUI: действия ---
+    "tui.refuel.full": "Tank already full.",
+    "tui.refuel.failed": "Refuelling failed: {reason}",
+    "tui.refuel.done": "Refuelled to full (-{cost:.2f} Cr)",
+    "tui.wait.done": "Turn passed. Shields +1.",
+    "tui.save.done": "Saved: {path}",
+    "tui.save.failed": "Save failed: {exc}",
+    "tui.quicksave.failed": "Quick save failed: {exc}",
+    "tui.quicksave.done": "Quick save -> {path}",
+    "tui.load.not_found": "File not found: {path}",
+    "tui.load.failed": "Load failed: {exc}",
+    "tui.load.done": "Loaded: {path} -> {name} ({credits:.1f} Cr)",
+    "tui.jump.failed": "Jump failed: {reason}",
+    "tui.jump.done": "Jump {old} -> {new} ({dist:.1f} ly, fuel -{cost})",
+    "tui.new_game": "New game started!",
 }
 
 RU: Dict[str, str] = {
@@ -407,6 +519,118 @@ RU: Dict[str, str] = {
     "tui.qty.invalid": "Некорректное число!",
     "tui.qty.positive": "Количество должно быть > 0!",
     "tui.trade.failed": "Сделка не удалась: {exc}",
+
+    # --- TUI: общие кнопки и колонки ---
+    "tui.btn.close": "Закрыть [Esc]",
+    "tui.btn.cancel": "Отмена [Esc]",
+    "tui.btn.done": "Готово [Esc]",
+    "tui.btn.buy": "Купить [Enter]",
+    "tui.btn.buy_max": "Купить на все",
+    "tui.btn.sell": "Продать [Enter]",
+    "tui.btn.sell_all": "Продать все",
+    "tui.btn.attack": "Атака [a]",
+    "tui.btn.flee": "Побег [f]",
+    "tui.btn.surrender": "Сдача [u]",
+    "tui.btn.new_game": "Новая игра [n]",
+    "tui.btn.quit": "Выход [q]",
+    "tui.btn.save": "Сохранить [Enter]",
+    "tui.btn.load": "Загрузить [Enter]",
+    "tui.col.commodity": "Товар",
+    "tui.col.price": "Цена Cr",
+    "tui.col.avail": "Наличие",
+    "tui.col.in_hold": "В трюме",
+    "tui.col.hold": "Трюм",
+    "tui.col.system": "Система",
+    "tui.col.ly": "Св.л.",
+    "tui.col.fuel": "Топливо",
+    "tui.col.economy": "Экономика",
+    "tui.col.gov": "Правитель",
+    "tui.col.risk": "Риск",
+    "tui.col.file": "Файл",
+    "tui.col.size": "Размер",
+    "tui.col.modified": "Изменён",
+
+    # --- TUI: покупка ---
+    "tui.buy.title": "MARKET — выберите строку, введите количество, Enter (диалог не закрывается после покупки)",
+    "tui.buy.qty_placeholder": "Количество (например 5)",
+    "tui.buy.max_entered": "Макс. доступно: {mx} (вы ввели {qty})",
+    "tui.buy.done": "Куплено {qty} {name} за {cost:.2f} Cr",
+    "tui.buy.unavailable": "{name}: недоступно для покупки (кредиты {credits:.1f})",
+
+    # --- TUI: продажа ---
+    "tui.sell.title": "ТРЮМ — выберите груз, введите количество, Enter (диалог не закрывается после продажи)",
+    "tui.sell.qty_placeholder": "Количество",
+    "tui.sell.empty": "Трюм пуст — нечего продавать!",
+    "tui.sell.only_hold": "В трюме только {hold} (вы ввели {qty})",
+    "tui.sell.done": "Продано {qty} {name} за {income:.2f} Cr",
+    "tui.sell.failed": "Продажа {name} не удалась: {exc}",
+    "tui.sell.all_done": "Продано всё: +{total:.2f} Cr",
+    "tui.sell.all_done_profit": "Продано всё: +{total:.2f} Cr (прибыль {profit:+.2f} Cr)",
+    "tui.sell.all_done_info": "Весь груз продан: +{total:.2f} Cr",
+    "tui.sell.all_done_info_profit": "Весь груз продан: +{total:.2f} Cr, прибыль {profit:+.2f} Cr",
+
+    # --- TUI: прыжок ---
+    "tui.jump.title": "КАРТА ГАЛАКТИКИ — выберите систему (клик или Enter)",
+    "tui.jump.empty": "Нет достижимых систем",
+
+    # --- TUI: бой ---
+    "tui.combat.title": "⚠ АТАКА ПИРАТОВ!",
+    "tui.combat.info": "Система: {name} ({gov})\nЩиты F:{fsh}/255 A:{ash}/255  Энергия: {eng}\nКредиты: {credits:.1f} Cr\nГруз: {cargo}/{hold}t",
+    "tui.combat.log": "Бой ({action}): {message}",
+
+    # --- TUI: конец игры ---
+    "tui.gameover.title": "💀 КОРАБЛЬ УНИЧТОЖЕН 💀",
+    "tui.gameover.text": "Игра окончена.",
+    "tui.gameover.log": "КОРАБЛЬ УНИЧТОЖЕН!",
+
+    # --- TUI: инфо о системе ---
+    "tui.info.title": "{name} (Галактика {galaxy})",
+    "tui.info.body": "Экономика: {economy}\nПравительство: {gov}\nТех. уровень: {tech}\nНаселение: {pop:.1f} млрд\nЩиты F:{fsh}/255 A:{ash}/255  Энергия: {eng}\n\n{description}",
+
+    # --- TUI: файлы ---
+    "tui.file.save_title": "СОХРАНИТЬ ИГРУ (.elite)",
+    "tui.file.load_title": "ЗАГРУЗИТЬ ИГРУ (.elite)",
+    "tui.file.name_placeholder": "Имя файла (например mysave.elite)",
+    "tui.file.name_required": "Введите имя файла!",
+    "tui.file.name_invalid": "Недопустимое имя: укажите имя без путей и слэшей!",
+
+    # --- TUI: справка ---
+    "tui.help.title": "СПРАВКА — ELITE: HARMLESS",
+    "tui.help.text": "УПРАВЛЕНИЕ\n  b — купить товар           s — продать товар\n  «Продать все» в диалоге продажи — продать весь груз\n  безусловно по ценам текущей звёздной системы\n  Двойной клик по товару в списке «РЫНОК» — диалог покупки\n  этого товара (в диалоге есть кнопка «Купить на все»)\n  j — прыжок в систему       i — описание системы\n  h — эта справка            r — заправка до полного\n  w — ждать ход (щиты +1)    q — выход\n  F5 — быстрый сейв          F9 — быстрый лоад (quicksave.elite)\n  F2 — сохранение в файл     F3 — загрузка (*.elite)\n  F4 — журнал сделок сессии\n  В диалогах: Esc — отмена, Ctrl+Z — отменить последнюю сделку\n  В бою: a — атака, f — побег, u — сдача\n\nКАК ИГРАТЬ\n  Цель — заработать кредиты: покупайте товары дёшево и продавайте\n  дороже в другой системе. Прыжок расходует топливо (0.2 Cr за\n  единицу); заправка — всегда до полного бака.\n  Рынок и опасность зависят от правительства системы: в анархиях\n  часто нападают пираты. Атака рискованна при слабых щитах, побег\n  успешнее с полным баком, сдача — потеря груза и части кредитов.\n  «Товары чужих» недоступны на рынке.\n\nСОХРАНЕНИЯ И ЖУРНАЛ\n  quicksave.elite — клавиши F5/F9; именованные сейвы — *.elite\n  (F2/F3). Все события игры пишутся в базу elite_events.db.",
+
+    # --- TUI: главное окно ---
+    "tui.panel.market": "РЫНОК",
+    "tui.panel.galaxy": "КАРТА ГАЛАКТИКИ",
+    "tui.btn.buy_key": "Купить [b]",
+    "tui.btn.sell_key": "Продать [s]",
+    "tui.btn.jump_key": "Прыжок [j]",
+    "tui.btn.refuel_key": "Заправка [r]",
+    "tui.btn.wait_key": "Ждать [w]",
+    "tui.btn.help_key": "Справка [h]",
+    "tui.btn.trades_key": "Сделки [F4]",
+    "tui.btn.quit_key": "Выход [q]",
+    "tui.welcome": "Добро пожаловать в pyElite!",
+    "tui.start": "Старт: {name} (Галактика {galaxy})",
+    "tui.keys_hint": "Клавиши: b=купить s=продать j=прыжок i=инфо h=справка r=заправка w=ждать q=выход | F5/F9 quick save/load, F2/F3 файлы (.elite)",
+
+    # --- TUI: статус-бар ---
+    "tui.status.bar": "Cr: {credits:.1f}  |  Топливо: {fuel}/{max}  |  Груз: {cargo}/{hold}t  |  Щиты F:{fsh} A:{ash}  Энергия: {eng}",
+
+    # --- TUI: действия ---
+    "tui.refuel.full": "Бак уже полон.",
+    "tui.refuel.failed": "Заправка не удалась: {reason}",
+    "tui.refuel.done": "Заправка до полного (-{cost:.2f} Cr)",
+    "tui.wait.done": "Прошёл ход. Щиты +1.",
+    "tui.save.done": "Сохранено: {path}",
+    "tui.save.failed": "Сохранение не удалось: {exc}",
+    "tui.quicksave.failed": "Быстрый сейв не удался: {exc}",
+    "tui.quicksave.done": "Быстрый сейв -> {path}",
+    "tui.load.not_found": "Файл не найден: {path}",
+    "tui.load.failed": "Загрузка не удалась: {exc}",
+    "tui.load.done": "Загружено: {path} -> {name} ({credits:.1f} Cr)",
+    "tui.jump.failed": "Прыжок не удался: {reason}",
+    "tui.jump.done": "Прыжок {old} -> {new} ({dist:.1f} св.л., топливо -{cost})",
+    "tui.new_game": "Новая игра началась!",
 }
 
 ES: Dict[str, str] = {
@@ -600,6 +824,118 @@ ES: Dict[str, str] = {
     "tui.qty.invalid": "¡Número no válido!",
     "tui.qty.positive": "¡La cantidad debe ser > 0!",
     "tui.trade.failed": "Operación fallida: {exc}",
+
+    # --- TUI: botones y columnas comunes ---
+    "tui.btn.close": "Cerrar [Esc]",
+    "tui.btn.cancel": "Cancelar [Esc]",
+    "tui.btn.done": "Listo [Esc]",
+    "tui.btn.buy": "Comprar [Enter]",
+    "tui.btn.buy_max": "Comprar al máximo",
+    "tui.btn.sell": "Vender [Enter]",
+    "tui.btn.sell_all": "Vender todo",
+    "tui.btn.attack": "Atacar [a]",
+    "tui.btn.flee": "Huir [f]",
+    "tui.btn.surrender": "Rendirse [u]",
+    "tui.btn.new_game": "Nueva partida [n]",
+    "tui.btn.quit": "Salir [q]",
+    "tui.btn.save": "Guardar [Enter]",
+    "tui.btn.load": "Cargar [Enter]",
+    "tui.col.commodity": "Producto",
+    "tui.col.price": "Precio Cr",
+    "tui.col.avail": "Disp.",
+    "tui.col.in_hold": "En bodega",
+    "tui.col.hold": "Bodega",
+    "tui.col.system": "Sistema",
+    "tui.col.ly": "a.l.",
+    "tui.col.fuel": "Comb.",
+    "tui.col.economy": "Economía",
+    "tui.col.gov": "Gob.",
+    "tui.col.risk": "Riesgo",
+    "tui.col.file": "Archivo",
+    "tui.col.size": "Tamaño",
+    "tui.col.modified": "Modificado",
+
+    # --- TUI: compra ---
+    "tui.buy.title": "MERCADO — seleccione una fila, introduzca la cantidad, Enter (el diálogo no se cierra tras la compra)",
+    "tui.buy.qty_placeholder": "Cantidad (p. ej. 5)",
+    "tui.buy.max_entered": "Máx. disponible: {mx} (ha introducido {qty})",
+    "tui.buy.done": "Comprado {qty} {name} por {cost:.2f} Cr",
+    "tui.buy.unavailable": "{name}: no disponible para compra (créditos {credits:.1f})",
+
+    # --- TUI: venta ---
+    "tui.sell.title": "BODEGA — seleccione la carga, introduzca la cantidad, Enter (el diálogo no se cierra tras la venta)",
+    "tui.sell.qty_placeholder": "Cantidad",
+    "tui.sell.empty": "¡La bodega está vacía — no hay nada que vender!",
+    "tui.sell.only_hold": "Solo {hold} en bodega (ha introducido {qty})",
+    "tui.sell.done": "Vendido {qty} {name} por {income:.2f} Cr",
+    "tui.sell.failed": "Venta de {name} fallida: {exc}",
+    "tui.sell.all_done": "Vendido todo: +{total:.2f} Cr",
+    "tui.sell.all_done_profit": "Vendido todo: +{total:.2f} Cr (beneficio {profit:+.2f} Cr)",
+    "tui.sell.all_done_info": "Toda la carga vendida: +{total:.2f} Cr",
+    "tui.sell.all_done_info_profit": "Toda la carga vendida: +{total:.2f} Cr, beneficio {profit:+.2f} Cr",
+
+    # --- TUI: salto ---
+    "tui.jump.title": "MAPA GALÁCTICO — seleccione un sistema (clic o Enter)",
+    "tui.jump.empty": "No hay sistemas alcanzables",
+
+    # --- TUI: combate ---
+    "tui.combat.title": "⚠ ¡ATAQUE PIRATA!",
+    "tui.combat.info": "Sistema: {name} ({gov})\nEscudos F:{fsh}/255 A:{ash}/255  Energía: {eng}\nCréditos: {credits:.1f} Cr\nCarga: {cargo}/{hold}t",
+    "tui.combat.log": "Combate ({action}): {message}",
+
+    # --- TUI: fin del juego ---
+    "tui.gameover.title": "💀 NAVE DESTRUIDA 💀",
+    "tui.gameover.text": "Fin del juego.",
+    "tui.gameover.log": "¡NAVE DESTRUIDA!",
+
+    # --- TUI: info del sistema ---
+    "tui.info.title": "{name} (Galaxia {galaxy})",
+    "tui.info.body": "Economía: {economy}\nGobierno: {gov}\nNivel tecnológico: {tech}\nPoblación: {pop:.1f} mil millones\nEscudos F:{fsh}/255 A:{ash}/255  Energía: {eng}\n\n{description}",
+
+    # --- TUI: archivos ---
+    "tui.file.save_title": "GUARDAR PARTIDA (.elite)",
+    "tui.file.load_title": "CARGAR PARTIDA (.elite)",
+    "tui.file.name_placeholder": "Nombre de archivo (p. ej. mysave.elite)",
+    "tui.file.name_required": "¡Introduzca un nombre de archivo!",
+    "tui.file.name_invalid": "¡Nombre no válido: use un nombre sin rutas ni barras!",
+
+    # --- TUI: ayuda ---
+    "tui.help.title": "AYUDA — ELITE: HARMLESS",
+    "tui.help.text": "CONTROLES\n  b — comprar producto        s — vender producto\n  «Vender todo» en el diálogo de venta — vender toda la bodega\n  incondicionalmente a los precios del sistema actual\n  Doble clic en un producto de la lista MERCADO — diálogo de compra\n  de ese producto (el diálogo tiene el botón «Comprar al máximo»)\n  j — saltar a un sistema     i — descripción del sistema\n  h — esta ayuda              r — repostar al máximo\n  w — esperar turno (escudos +1)  q — salir\n  F5 — guardado rápido        F9 — carga rápida (quicksave.elite)\n  F2 — guardar en archivo     F3 — cargar (*.elite)\n  F4 — registro de operaciones de la sesión\n  En diálogos: Esc — cancelar, Ctrl+Z — deshacer la última operación\n  En combate: a — atacar, f — huir, u — rendirse\n\nCÓMO JUGAR\n  El objetivo es ganar créditos: compre productos baratos y véndalos\n  más caros en otro sistema. El salto consume combustible (0.2 Cr por\n  unidad); el repostaje siempre llena el depósito.\n  El mercado y el peligro dependen del gobierno del sistema: en las\n  anarquías atacan a menudo los piratas. Atacar es arriesgado con\n  escudos débiles, huir es más fácil con el depósito lleno, rendirse\n  significa perder la carga y parte de los créditos.\n  Los «productos alienígenas» no están disponibles en el mercado.\n\nGUARDADOS Y REGISTRO\n  quicksave.elite — teclas F5/F9; guardados con nombre — *.elite\n  (F2/F3). Todos los eventos del juego se escriben en la base\n  elite_events.db.",
+
+    # --- TUI: ventana principal ---
+    "tui.panel.market": "MERCADO",
+    "tui.panel.galaxy": "MAPA GALÁCTICO",
+    "tui.btn.buy_key": "Comprar [b]",
+    "tui.btn.sell_key": "Vender [s]",
+    "tui.btn.jump_key": "Saltar [j]",
+    "tui.btn.refuel_key": "Repostar [r]",
+    "tui.btn.wait_key": "Esperar [w]",
+    "tui.btn.help_key": "Ayuda [h]",
+    "tui.btn.trades_key": "Operaciones [F4]",
+    "tui.btn.quit_key": "Salir [q]",
+    "tui.welcome": "¡Bienvenido a pyElite!",
+    "tui.start": "Inicio: {name} (Galaxia {galaxy})",
+    "tui.keys_hint": "Teclas: b=comprar s=vender j=saltar i=info h=ayuda r=repostar w=esperar q=salir | F5/F9 guardado/carga rápida, F2/F3 archivos (.elite)",
+
+    # --- TUI: barra de estado ---
+    "tui.status.bar": "Cr: {credits:.1f}  |  Comb.: {fuel}/{max}  |  Carga: {cargo}/{hold}t  |  Escudos F:{fsh} A:{ash}  Energía: {eng}",
+
+    # --- TUI: acciones ---
+    "tui.refuel.full": "El depósito ya está lleno.",
+    "tui.refuel.failed": "Repostaje fallido: {reason}",
+    "tui.refuel.done": "Repostado al máximo (-{cost:.2f} Cr)",
+    "tui.wait.done": "Turno pasado. Escudos +1.",
+    "tui.save.done": "Guardado: {path}",
+    "tui.save.failed": "Guardado fallido: {exc}",
+    "tui.quicksave.failed": "Guardado rápido fallido: {exc}",
+    "tui.quicksave.done": "Guardado rápido -> {path}",
+    "tui.load.not_found": "Archivo no encontrado: {path}",
+    "tui.load.failed": "Carga fallida: {exc}",
+    "tui.load.done": "Cargado: {path} -> {name} ({credits:.1f} Cr)",
+    "tui.jump.failed": "Salto fallido: {reason}",
+    "tui.jump.done": "Salto {old} -> {new} ({dist:.1f} a.l., combustible -{cost})",
+    "tui.new_game": "¡Nueva partida iniciada!",
 }
 
 # ---------------------------------------------------------------------------

@@ -6,7 +6,8 @@ elite_tui.py — TUI-версия pyElite на Textual.
 EventLogger передаётся в GameState (ядро логирует автоматически).
 player_id=0 — человек.
 
-Запуск:  python elite_tui.py
+Запуск:  python elite_tui.py [--lang en|ru|es]
+        (по умолчанию язык интерфейса — ru; доступны en, ru, es)
 Зависимости:  pip install textual
 
 Иерархия экранов: DialogScreen (Esc/кнопки отмены) — база всех
@@ -41,6 +42,7 @@ CombatScreen/GameOverScreen — «голые» ModalScreen, т.к. их клав
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -82,8 +84,8 @@ TUI_LANG = "ru"   # язык интерфейса TUI
 
 
 def _commodity_ru(index: int) -> str:
-    """Локализованное название товара для русскоязычного интерфейса."""
-    return commodity_display(index, TUI_LANG) or COMMODITIES[index]
+    """Локализованное название товара для интерфейса (язык _I18N)."""
+    return commodity_display(index, _I18N.locale) or COMMODITIES[index]
 
 
 # Локализатор TUI (интерфейс русскоязычный).
@@ -720,23 +722,24 @@ class BuyScreen(TradeDialogScreen):
 
     def compose(self) -> ComposeResult:
         with Vertical(id="buy-container"):
-            yield Label(
-                "MARKET — выберите строку, введите количество, Enter "
-                "(диалог не закрывается после покупки)")
+            yield Label(_I18N.tr("tui.buy.title"))
             yield DataTable(id="buy-table", cursor_type="row")
-            yield QtyInput(placeholder="Количество (например 5)", id="buy-qty")
+            yield QtyInput(
+                placeholder=_I18N.tr("tui.buy.qty_placeholder"), id="buy-qty")
             yield Label("", id="buy-info")
             with Horizontal(id="buy-buttons", classes="dialog-buttons"):
-                yield Button("Купить [Enter]", id="buy-ok", variant="success")
-                yield Button("Купить на все", id="buy-max", variant="warning")
-                yield Button("Готово [Esc]", id="buy-cancel", variant="error")
+                yield Button(_I18N.tr("tui.btn.buy"), id="buy-ok", variant="success")
+                yield Button(
+                    _I18N.tr("tui.btn.buy_max"), id="buy-max", variant="warning")
+                yield Button(
+                    _I18N.tr("tui.btn.done"), id="buy-cancel", variant="error")
 
     def _setup_table(self) -> None:
         t = self._table()
-        t.add_column("Товар", width=20)
-        t.add_column("Цена Cr", width=8)
-        t.add_column("Наличие", width=7)
-        t.add_column("В трюме", width=7)
+        t.add_column(_I18N.tr("tui.col.commodity"), width=20)
+        t.add_column(_I18N.tr("tui.col.price"), width=8)
+        t.add_column(_I18N.tr("tui.col.avail"), width=7)
+        t.add_column(_I18N.tr("tui.col.in_hold"), width=7)
 
     def _remember_selected(self, ci: int) -> None:
         self.app.last_buy_ci = ci
@@ -802,7 +805,7 @@ class BuyScreen(TradeDialogScreen):
         if qty > _max_buy(self.state, ci):
             mx, _avail, _by_credits, _by_space = _buy_limits(self.state, ci)
             self._info_label().update(
-                f"Макс. доступно: {mx} (вы ввели {qty})")
+                _I18N.tr("tui.buy.max_entered", mx=mx, qty=qty))
             return False
         return True
 
@@ -812,7 +815,8 @@ class BuyScreen(TradeDialogScreen):
     def _after_trade(self, ci: int, qty: int, cost: float) -> None:
         record_buy(self.state, ci, qty, cost)
         self.app._log(
-            f"Куплено {qty} {_commodity_ru(ci)} за {cost:.2f} Cr",
+            _I18N.tr(
+                "tui.buy.done", qty=qty, name=_commodity_ru(ci), cost=cost),
             style=STYLE_GOOD,
         )
         self.app._record_trade(_I18N.tr(
@@ -828,8 +832,11 @@ class BuyScreen(TradeDialogScreen):
         mx, _avail, _by_credits, _by_space = _buy_limits(self.state, ci)
         if mx <= 0:
             self._info_label().update(
-                f"{_commodity_ru(ci)}: недоступно для покупки "
-                f"(кредиты {self.state.credits:.1f})")
+                _I18N.tr(
+                    "tui.buy.unavailable", name=_commodity_ru(ci),
+                    credits=self.state.credits,
+                )
+            )
             return
         self._qty_input().value = str(mx)
         self._update_info()
@@ -865,22 +872,23 @@ class SellScreen(TradeDialogScreen):
 
     def compose(self) -> ComposeResult:
         with Vertical(id="sell-container"):
-            yield Label(
-                "ТРЮМ — выберите груз, введите количество, Enter "
-                "(диалог не закрывается после продажи)")
+            yield Label(_I18N.tr("tui.sell.title"))
             yield SellTable(id="sell-table", cursor_type="row")
-            yield QtyInput(placeholder="Количество", id="sell-qty")
+            yield QtyInput(
+                placeholder=_I18N.tr("tui.sell.qty_placeholder"), id="sell-qty")
             yield Label("", id="sell-info")
             with Horizontal(id="sell-buttons", classes="dialog-buttons"):
-                yield Button("Продать [Enter]", id="sell-ok", variant="success")
-                yield Button("Продать все", id="sell-all", variant="warning")
-                yield Button("Готово [Esc]", id="sell-cancel", variant="error")
+                yield Button(_I18N.tr("tui.btn.sell"), id="sell-ok", variant="success")
+                yield Button(
+                    _I18N.tr("tui.btn.sell_all"), id="sell-all", variant="warning")
+                yield Button(
+                    _I18N.tr("tui.btn.done"), id="sell-cancel", variant="error")
 
     def _setup_table(self) -> None:
         t = self._table()
-        t.add_column("Товар", width=20)
-        t.add_column("Цена Cr", width=8)
-        t.add_column("В трюме", width=7)
+        t.add_column(_I18N.tr("tui.col.commodity"), width=20)
+        t.add_column(_I18N.tr("tui.col.price"), width=8)
+        t.add_column(_I18N.tr("tui.col.in_hold"), width=7)
 
     def _remember_selected(self, ci: int) -> None:
         self.app.last_sell_ci = ci
@@ -900,7 +908,7 @@ class SellScreen(TradeDialogScreen):
 
     def _after_reload(self) -> None:
         if not getattr(self, "_has_cargo", True):
-            self._info_label().update("Трюм пуст — нечего продавать!")
+            self._info_label().update(_I18N.tr("tui.sell.empty"))
 
     def _update_info(self) -> None:
         ci = self._selected_ci()
@@ -955,7 +963,7 @@ class SellScreen(TradeDialogScreen):
         hold = self.state.cargo[ci]
         if qty > hold:
             self._info_label().update(
-                f"В трюме только {hold} (вы ввели {qty})")
+                _I18N.tr("tui.sell.only_hold", hold=hold, qty=qty))
             return False
         return True
 
@@ -978,7 +986,10 @@ class SellScreen(TradeDialogScreen):
             )
         else:
             self.app._log(
-                f"Продано {qty} {_commodity_ru(ci)} за {income:.2f} Cr",
+                _I18N.tr(
+                    "tui.sell.done", qty=qty, name=_commodity_ru(ci),
+                    income=income,
+                ),
                 style=STYLE_GOOD,
             )
 
@@ -1018,7 +1029,7 @@ class SellScreen(TradeDialogScreen):
                 total_value += float(rows[ci]["price_buy_cr"]) * qty
             if positions == 0:
                 self.query_one("#sell-info", Label).update(
-                    "Трюм пуст — нечего продавать!")
+                    _I18N.tr("tui.sell.empty"))
                 return
             self._sell_all_armed = True
             self.query_one("#sell-info", Label).update(
@@ -1042,7 +1053,8 @@ class SellScreen(TradeDialogScreen):
                 income = self.state.sell(COMMODITIES[ci], qty)
             except (ValueError, MarketError) as exc:
                 self.query_one("#sell-info", Label).update(
-                    f"Продажа {_commodity_ru(ci)} не удалась: {exc}")
+                    _I18N.tr(
+                        "tui.sell.failed", name=_commodity_ru(ci), exc=exc))
                 return
             sold_any = True
             total += income
@@ -1052,25 +1064,34 @@ class SellScreen(TradeDialogScreen):
                 has_ledger = True
                 total_profit += income - avg * qty
             self.app._log(
-                f"Продано {qty} {_commodity_ru(ci)} за {income:.2f} Cr",
+                _I18N.tr(
+                    "tui.sell.done", qty=qty, name=_commodity_ru(ci),
+                    income=income,
+                ),
                 style=STYLE_GOOD,
             )
         if not sold_any:
             self.query_one("#sell-info", Label).update(
-                "Трюм пуст — нечего продавать!")
+                _I18N.tr("tui.sell.empty"))
             return
         self.state.defense.recharge(1)
         if has_ledger:
             self.app._log(
-                f"Продано всё: +{total:.2f} Cr "
-                f"(прибыль {total_profit:+.2f} Cr)",
+                _I18N.tr(
+                    "tui.sell.all_done_profit", total=total, profit=total_profit),
                 style=STYLE_GOOD + " bold",
             )
         else:
-            self.app._log(f"Продано всё: +{total:.2f} Cr", style=STYLE_GOOD + " bold")
+            self.app._log(
+                _I18N.tr("tui.sell.all_done", total=total),
+                style=STYLE_GOOD + " bold",
+            )
         self.query_one("#sell-info", Label).update(
-            f"Весь груз продан: +{total:.2f} Cr"
-            + (f", прибыль {total_profit:+.2f} Cr" if has_ledger else "")
+            _I18N.tr(
+                "tui.sell.all_done_info_profit" if has_ledger
+                else "tui.sell.all_done_info",
+                total=total, profit=total_profit,
+            )
         )
         self.app._refresh()
         self.query_one("#sell-qty", Input).value = ""
@@ -1102,19 +1123,19 @@ class JumpScreen(DialogScreen):
 
     def compose(self) -> ComposeResult:
         with Vertical(id="jump-container"):
-            yield Label("КАРТА ГАЛАКТИКИ — выберите систему (клик или Enter)")
+            yield Label(_I18N.tr("tui.jump.title"))
             yield DataTable(id="jump_table", zebra_stripes=True, cursor_type="row")
             with Horizontal(id="jump-buttons", classes="dialog-buttons"):
-                yield Button("Отмена [Esc]", id="jump-cancel", variant="error")
+                yield Button(_I18N.tr("tui.btn.cancel"), id="jump-cancel", variant="error")
 
     def on_mount(self) -> None:
         t = self.query_one("#jump_table", DataTable)
-        t.add_column("Система", width=12)
-        t.add_column("Св.л.", width=6)
-        t.add_column("Топливо", width=7)
-        t.add_column("Экономика", width=12)
-        t.add_column("Правитель", width=12)
-        t.add_column("Риск", width=4)
+        t.add_column(_I18N.tr("tui.col.system"), width=12)
+        t.add_column(_I18N.tr("tui.col.ly"), width=6)
+        t.add_column(_I18N.tr("tui.col.fuel"), width=7)
+        t.add_column(_I18N.tr("tui.col.economy"), width=12)
+        t.add_column(_I18N.tr("tui.col.gov"), width=12)
+        t.add_column(_I18N.tr("tui.col.risk"), width=4)
 
         self._indices = []
 
@@ -1141,7 +1162,7 @@ class JumpScreen(DialogScreen):
 
         if not systems:
             t.add_row(
-                Text("Нет достижимых систем", style=STYLE_BAD),
+                Text(_I18N.tr("tui.jump.empty"), style=STYLE_BAD),
                 Text(""), Text(""), Text(""), Text(""), Text(""),
             )
 
@@ -1186,19 +1207,27 @@ class CombatScreen(ModalScreen):
         gov = int(self.state.system["government"])
         fsh, ash, eng = _shields(self.state)
         with Vertical(id="combat-container"):
-            yield Label("⚠ АТАКА ПИРАТОВ!", id="combat-title")
+            yield Label(_I18N.tr("tui.combat.title"), id="combat-title")
             yield Label(
-                f"Система: {self.state.system['name']} "
-                f"({GOV_NAMES.get(gov, '?')})\n"
-                f"Щиты F:{fsh}/255 A:{ash}/255  Энергия: {eng}\n"
-                f"Кредиты: {self.state.credits:.1f} Cr\n"
-                f"Груз: {self.state.cargo_weight}/{SHIP_HOLD}t",
+                _I18N.tr(
+                    "tui.combat.info",
+                    name=self.state.system['name'],
+                    gov=GOV_NAMES.get(gov, '?'),
+                    fsh=fsh, ash=ash, eng=eng,
+                    credits=self.state.credits,
+                    cargo=self.state.cargo_weight, hold=SHIP_HOLD,
+                ),
                 id="combat-info",
             )
             with Horizontal(id="combat-buttons"):
-                yield Button("Атака [a]", id="combat-attack", variant="error")
-                yield Button("Побег [f]", id="combat-flee", variant="warning")
-                yield Button("Сдача [u]", id="combat-surrender", variant="success")
+                yield Button(
+                    _I18N.tr("tui.btn.attack"), id="combat-attack", variant="error")
+                yield Button(
+                    _I18N.tr("tui.btn.flee"), id="combat-flee", variant="warning")
+                yield Button(
+                    _I18N.tr("tui.btn.surrender"),
+                    id="combat-surrender", variant="success",
+                )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         btn = event.button.id
@@ -1241,11 +1270,15 @@ class GameOverScreen(ModalScreen):
 
     def compose(self) -> ComposeResult:
         with Vertical(id="gameover-container"):
-            yield Label("💀 КОРАБЛЬ УНИЧТОЖЕН 💀", id="gameover-title")
-            yield Label("Игра окончена.")
+            yield Label(_I18N.tr("tui.gameover.title"), id="gameover-title")
+            yield Label(_I18N.tr("tui.gameover.text"))
             with Horizontal(id="gameover-buttons"):
-                yield Button("Новая игра [n]", id="gameover-new", variant="success")
-                yield Button("Выход [q]", id="gameover-quit", variant="error")
+                yield Button(
+                    _I18N.tr("tui.btn.new_game"),
+                    id="gameover-new", variant="success",
+                )
+                yield Button(
+                    _I18N.tr("tui.btn.quit"), id="gameover-quit", variant="error")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "gameover-new":
@@ -1282,22 +1315,29 @@ class InfoScreen(DialogScreen):
         fsh, ash, eng = _shields(self.state)
         with Vertical(id="info-container"):
             yield Label(
-                f"{self.state.system['name']} "
-                f"(Галактика {self.state.galaxy + 1})",
+                _I18N.tr(
+                    "tui.info.title",
+                    name=self.state.system['name'],
+                    galaxy=self.state.galaxy + 1,
+                ),
                 id="info-title",
             )
             yield Label(
-                f"Экономика: {self.state.system['economy_name']}\n"
-                f"Правительство: {GOV_NAMES.get(gov, '?')}\n"
-                f"Тех. уровень: {int(self.state.system['tech_level'])}\n"
-                f"Население: "
-                f"{int(self.state.system['population']) / 10:.1f} млрд\n"
-                f"Щиты F:{fsh}/255 A:{ash}/255  Энергия: {eng}\n\n"
-                f"{self.state.generate_description(lang='ru')}",
+                _I18N.tr(
+                    "tui.info.body",
+                    economy=self.state.system['economy_name'],
+                    gov=GOV_NAMES.get(gov, '?'),
+                    tech=int(self.state.system['tech_level']),
+                    pop=int(self.state.system['population']) / 10,
+                    fsh=fsh, ash=ash, eng=eng,
+                    description=self.state.generate_description(
+                        lang=_I18N.locale),
+                ),
                 id="info-text",
             )
             with Horizontal(id="info-buttons", classes="dialog-buttons"):
-                yield Button("Закрыть [Esc]", id="info-close", variant="primary")
+                yield Button(
+                    _I18N.tr("tui.btn.close"), id="info-close", variant="primary")
 
 class FileDialog(DialogScreen):
     """Выбор файла сохранения (.elite) для записи или загрузки.
@@ -1324,30 +1364,33 @@ class FileDialog(DialogScreen):
 
     def compose(self) -> ComposeResult:
         title = (
-            "СОХРАНИТЬ ИГРУ (.elite)"
+            _I18N.tr("tui.file.save_title")
             if self.mode == "save"
-            else "ЗАГРУЗИТЬ ИГРУ (.elite)"
+            else _I18N.tr("tui.file.load_title")
         )
         ok_label = (
-            "Сохранить [Enter]" if self.mode == "save" else "Загрузить [Enter]"
+            _I18N.tr("tui.btn.save")
+            if self.mode == "save"
+            else _I18N.tr("tui.btn.load")
         )
         with Vertical(id="file-container"):
             yield Label(title)
             yield DataTable(id="file-table", cursor_type="row")
             yield Input(
-                placeholder="Имя файла (например mysave.elite)",
+                placeholder=_I18N.tr("tui.file.name_placeholder"),
                 id="file-name",
             )
             yield Label("", id="file-info")
             with Horizontal(id="file-buttons", classes="dialog-buttons"):
                 yield Button(ok_label, id="file-ok", variant="success")
-                yield Button("Отмена [Esc]", id="file-cancel", variant="error")
+                yield Button(
+                    _I18N.tr("tui.btn.cancel"), id="file-cancel", variant="error")
 
     def on_mount(self) -> None:
         t = self.query_one("#file-table", DataTable)
-        t.add_column("Файл", width=30)
-        t.add_column("Размер", width=10)
-        t.add_column("Изменён", width=19)
+        t.add_column(_I18N.tr("tui.col.file"), width=30)
+        t.add_column(_I18N.tr("tui.col.size"), width=10)
+        t.add_column(_I18N.tr("tui.col.modified"), width=19)
         try:
             names = sorted(
                 (f for f in os.listdir(self.directory)
@@ -1385,7 +1428,7 @@ class FileDialog(DialogScreen):
             selected = self._selected_file()
             if selected is None:
                 self.query_one("#file-info", Label).update(
-                    "Введите имя файла!")
+                    _I18N.tr("tui.file.name_required"))
                 return None
             name = selected
         # Валидация: только базовое имя файла — без путей и слэшей
@@ -1393,7 +1436,7 @@ class FileDialog(DialogScreen):
         if ("/" in name or "\\" in name or "\0" in name
                 or name in (".", "..")):
             self.query_one("#file-info", Label).update(
-                "Недопустимое имя: укажите имя без путей и слэшей!")
+                _I18N.tr("tui.file.name_invalid"))
             return None
         if not name.endswith(SAVE_EXTENSION):
             name += SAVE_EXTENSION
@@ -1439,43 +1482,14 @@ class HelpScreen(DialogScreen):
 
     BINDINGS = [Binding("escape", "cancel", "Close")]
 
-    HELP_TEXT = (
-        "УПРАВЛЕНИЕ\n"
-        "  b — купить товар           s — продать товар\n"
-        "  «Продать все» в диалоге продажи — продать весь груз\n"
-        "  безусловно по ценам текущей звёздной системы\n"
-        "  Двойной клик по товару в списке «РЫНОК» — диалог покупки\n"
-        "  этого товара (в диалоге есть кнопка «Купить на все»)\n"
-        "  j — прыжок в систему       i — описание системы\n"
-        "  h — эта справка            r — заправка до полного\n"
-        "  w — ждать ход (щиты +1)    q — выход\n"
-        "  F5 — быстрый сейв          F9 — быстрый лоад (quicksave.elite)\n"
-        "  F2 — сохранение в файл     F3 — загрузка (*.elite)\n"
-        "  F4 — журнал сделок сессии\n"
-        "  В диалогах: Esc — отмена, Ctrl+Z — отменить последнюю сделку\n"
-        "  В бою: a — атака, f — побег, u — сдача\n"
-        "\n"
-        "КАК ИГРАТЬ\n"
-        "  Цель — заработать кредиты: покупайте товары дёшево и продавайте\n"
-        "  дороже в другой системе. Прыжок расходует топливо (0.2 Cr за\n"
-        "  единицу); заправка — всегда до полного бака.\n"
-        "  Рынок и опасность зависят от правительства системы: в анархиях\n"
-        "  часто нападают пираты. Атака рискованна при слабых щитах, побег\n"
-        "  успешнее с полным баком, сдача — потеря груза и части кредитов.\n"
-        "  «Товары чужих» недоступны на рынке.\n"
-        "\n"
-        "СОХРАНЕНИЯ И ЖУРНАЛ\n"
-        "  quicksave.elite — клавиши F5/F9; именованные сейвы — *.elite\n"
-        "  (F2/F3). Все события игры пишутся в базу elite_events.db."
-    )
-
     def compose(self) -> ComposeResult:
         with Vertical(id="help-container"):
-            yield Label("СПРАВКА — ELITE: HARMLESS", id="help-title")
+            yield Label(_I18N.tr("tui.help.title"), id="help-title")
             with VerticalScroll(id="help-scroll"):
-                yield Static(self.HELP_TEXT, id="help-text")
+                yield Static(_I18N.tr("tui.help.text"), id="help-text")
             with Horizontal(id="help-buttons", classes="dialog-buttons"):
-                yield Button("Закрыть [Esc]", id="help-close", variant="primary")
+                yield Button(
+                    _I18N.tr("tui.btn.close"), id="help-close", variant="primary")
 
 class TradeLogScreen(DialogScreen):
     """F4: журнал сделок текущей сессии (в памяти, не сохраняется)."""
@@ -1508,7 +1522,9 @@ class TradeLogScreen(DialogScreen):
                         _I18N.tr("tui.tradelog.empty"), id="tradelog-text")
             with Horizontal(id="tradelog-buttons", classes="dialog-buttons"):
                 yield Button(
-                    "Закрыть [Esc]", id="tradelog-close", variant="primary")
+                    _I18N.tr("tui.btn.close"),
+                    id="tradelog-close", variant="primary",
+                )
 
 class EliteTUI(App):
     """TUI для pyElite на Textual."""
@@ -1593,35 +1609,34 @@ class EliteTUI(App):
         yield Static(id="status-bar")
         with Horizontal(id="middle"):
             with Vertical(id="market-panel"):
-                yield Label("РЫНОК")
+                yield Label(_I18N.tr("tui.panel.market"))
                 yield MarketTable(id="market-table")
             with Vertical(id="galaxy-panel"):
-                yield Label("КАРТА ГАЛАКТИКИ")
+                yield Label(_I18N.tr("tui.panel.galaxy"))
                 yield DataTable(id="galaxy-table")
         yield RichLog(id="log-panel")
         with Horizontal(id="action-bar"):
-            yield Button("Купить [b]", id="btn-buy")
-            yield Button("Продать [s]", id="btn-sell")
-            yield Button("Прыжок [j]", id="btn-jump")
-            yield Button("Заправка [r]", id="btn-refuel")
-            yield Button("Ждать [w]", id="btn-wait")
-            yield Button("Справка [h]", id="btn-help")
-            yield Button("Сделки [F4]", id="btn-trades")
-            yield Button("Выход [q]", id="btn-quit")
+            yield Button(_I18N.tr("tui.btn.buy_key"), id="btn-buy")
+            yield Button(_I18N.tr("tui.btn.sell_key"), id="btn-sell")
+            yield Button(_I18N.tr("tui.btn.jump_key"), id="btn-jump")
+            yield Button(_I18N.tr("tui.btn.refuel_key"), id="btn-refuel")
+            yield Button(_I18N.tr("tui.btn.wait_key"), id="btn-wait")
+            yield Button(_I18N.tr("tui.btn.help_key"), id="btn-help")
+            yield Button(_I18N.tr("tui.btn.trades_key"), id="btn-trades")
+            yield Button(_I18N.tr("tui.btn.quit_key"), id="btn-quit")
 
     def on_mount(self) -> None:
         self.logger = EventLogger(self.db_path, player_id=PLAYER_ID)
         self._new_game()
-        self._log("Добро пожаловать в pyElite!")
+        self._log(_I18N.tr("tui.welcome"))
         self._log(
-            f"Старт: {self.state.system['name']} "
-            f"(Галактика {self.state.galaxy + 1})"
+            _I18N.tr(
+                "tui.start",
+                name=self.state.system['name'],
+                galaxy=self.state.galaxy + 1,
+            )
         )
-        self._log(
-            "Клавиши: b=купить s=продать j=прыжок i=инфо h=справка "
-            "r=заправка w=ждать q=выход | F5/F9 quick save/load, "
-            "F2/F3 файлы (.elite)"
-        )
+        self._log(_I18N.tr("tui.keys_hint"))
         self._refresh()
 
     # ── Отображение ──
@@ -1655,21 +1670,24 @@ class EliteTUI(App):
             f" {st.system['name']} (G{st.galaxy + 1})  |  "
             f"{st.system['economy_name']}  |  "
             f"[{gov_style}]{gov_name}[/]{danger}  |  "
-            f"Cr: {st.credits:.1f}  |  "
-            f"Топливо: {int(round(st.fuel))}/{FUEL_TANK_CAPACITY}  |  "
-            f"Груз: {st.cargo_weight}/{SHIP_HOLD}t  |  "
-            f"Щиты F:{fsh} A:{ash}  Энергия: {eng}"
+            + _I18N.tr(
+                "tui.status.bar",
+                credits=st.credits, fuel=int(round(st.fuel)),
+                max=FUEL_TANK_CAPACITY,
+                cargo=st.cargo_weight, hold=SHIP_HOLD,
+                fsh=fsh, ash=ash, eng=eng,
+            )
         )
         self.query_one("#status-bar", Static).update(line)
 
     def _refresh_market(self) -> None:
         t = self.query_one("#market-table", MarketTable)
         t.clear(columns=True)
-        t.add_column("Товар", width=20)
-        t.add_column("Цена Cr", width=8)
+        t.add_column(_I18N.tr("tui.col.commodity"), width=20)
+        t.add_column(_I18N.tr("tui.col.price"), width=8)
         t.add_column(_I18N.tr("tui.market.col_basis"), width=8)
-        t.add_column("Наличие", width=7)
-        t.add_column("Трюм", width=6)
+        t.add_column(_I18N.tr("tui.col.avail"), width=7)
+        t.add_column(_I18N.tr("tui.col.hold"), width=6)
         rows = self.state.market.get_market()
         self._market_indices = []
         for i, name in enumerate(COMMODITIES):
@@ -1693,12 +1711,12 @@ class EliteTUI(App):
     def _refresh_galaxy(self) -> None:
         t = self.query_one("#galaxy-table", DataTable)
         t.clear(columns=True)
-        t.add_column("Система", width=12)
-        t.add_column("Св.л.", width=6)
-        t.add_column("Топливо", width=7)
-        t.add_column("Экономика", width=12)
-        t.add_column("Правитель", width=12)
-        t.add_column("Риск", width=4)
+        t.add_column(_I18N.tr("tui.col.system"), width=12)
+        t.add_column(_I18N.tr("tui.col.ly"), width=6)
+        t.add_column(_I18N.tr("tui.col.fuel"), width=7)
+        t.add_column(_I18N.tr("tui.col.economy"), width=12)
+        t.add_column(_I18N.tr("tui.col.gov"), width=12)
+        t.add_column(_I18N.tr("tui.col.risk"), width=4)
         t.add_column(_I18N.tr("tui.map.col_trend"), width=5)
         for index, name, dist_units, fuel_cost in self.state.near_systems():
             dist_ly = dist_units / 10.0
@@ -1741,13 +1759,17 @@ class EliteTUI(App):
 
     def action_refuel(self) -> None:
         if int(round(self.state.fuel)) >= FUEL_TANK_CAPACITY:
-            self._log("Бак уже полон.", style=STYLE_WARN)
+            self._log(_I18N.tr("tui.refuel.full"), style=STYLE_WARN)
             return
         result = self.state.refuel()
         if not result:
-            self._log(f"Заправка не удалась: {result.error_reason}", style=STYLE_BAD)
+            self._log(
+                _I18N.tr("tui.refuel.failed", reason=result.error_reason),
+                style=STYLE_BAD,
+            )
             return
-        self._log(f"Заправка до полного (-{result.cost:.2f} Cr)", style="cyan")
+        self._log(
+            _I18N.tr("tui.refuel.done", cost=result.cost), style="cyan")
         self.state.defense.recharge(1)
         self._refresh()
 
@@ -1758,7 +1780,7 @@ class EliteTUI(App):
         ожидание не обновляет рынок и не перезапускает проверки атак.
         Событие хода пишется в журнал (action="wait")."""
         self.state.wait_turn()
-        self._log("Прошёл ход. Щиты +1.", style=STYLE_DIM)
+        self._log(_I18N.tr("tui.wait.done"), style=STYLE_DIM)
         self._refresh()
 
     # ── Сохранение/загрузка ──
@@ -1770,9 +1792,13 @@ class EliteTUI(App):
         try:
             save_game_to_path(self.state, self.quick_save_path)
         except OSError as exc:
-            self._log(f"Quick save failed: {exc}", style=STYLE_BAD)
+            self._log(
+                _I18N.tr("tui.quicksave.failed", exc=exc), style=STYLE_BAD)
             return
-        self._log(f"Quick save -> {self.quick_save_path}", style=STYLE_GOOD)
+        self._log(
+            _I18N.tr("tui.quicksave.done", path=self.quick_save_path),
+            style=STYLE_GOOD,
+        )
 
     def action_quick_load(self) -> None:
         """F9: быстрая загрузка из фиксированного файла."""
@@ -1807,9 +1833,10 @@ class EliteTUI(App):
         try:
             save_game_to_path(self.state, result)
         except OSError as exc:
-            self._log(f"Save failed: {exc}", style=STYLE_BAD)
+            self._log(
+                _I18N.tr("tui.save.failed", exc=exc), style=STYLE_BAD)
             return
-        self._log(f"Сохранено: {result}", style=STYLE_GOOD)
+        self._log(_I18N.tr("tui.save.done", path=result), style=STYLE_GOOD)
 
     def _on_load_done(self, result) -> None:
         if result is None:
@@ -1818,16 +1845,20 @@ class EliteTUI(App):
 
     def _load_from_path(self, path: str) -> None:
         if not os.path.exists(path):
-            self._log(f"Файл не найден: {path}", style=STYLE_WARN)
+            self._log(
+                _I18N.tr("tui.load.not_found", path=path), style=STYLE_WARN)
             return
         try:
             self.state = load_game_from_path(path, event_logger=self.logger)
         except (OSError, ValueError, KeyError, TypeError) as exc:
-            self._log(f"Загрузка не удалась: {exc}", style=STYLE_BAD)
+            self._log(
+                _I18N.tr("tui.load.failed", exc=exc), style=STYLE_BAD)
             return
         self._log(
-            f"Загружено: {path} -> {self.state.system['name']} "
-            f"({self.state.credits:.1f} Cr)",
+            _I18N.tr(
+                "tui.load.done", path=path,
+                name=self.state.system['name'], credits=self.state.credits,
+            ),
             style=STYLE_GOOD,
         )
         self._refresh()
@@ -1891,19 +1922,23 @@ class EliteTUI(App):
         jump_result = self.state.jump(target)
         if not jump_result:
             self._log(
-                f"Прыжок не удался: {jump_result.error_reason}", style=STYLE_BAD,
+                _I18N.tr("tui.jump.failed", reason=jump_result.error_reason),
+                style=STYLE_BAD,
             )
             return
         new_name = self.state.system["name"]
         self._log(
-            f"Прыжок {old_name} -> {new_name} "
-            f"({jump_result.distance_ly:.1f} св.л., топливо -{jump_result.fuel_cost})",
+            _I18N.tr(
+                "tui.jump.done", old=old_name, new=new_name,
+                dist=jump_result.distance_ly, cost=jump_result.fuel_cost,
+            ),
             style="cyan",
         )
         self._refresh()
         # Проверка пиратской атаки после прыжка
         if self.state.check_pirate_attack():
-            self._log("ПИРАТЫ НАПАДАЮТ!", style=STYLE_BAD + " bold")
+            self._log(
+                _I18N.tr("tui.notify.pirates"), style=STYLE_BAD + " bold")
             self.notify(
                 _I18N.tr("tui.notify.pirates"),
                 severity="error", timeout=10,
@@ -1918,10 +1953,16 @@ class EliteTUI(App):
         action = result
         core_action = "escape" if action == "flee" else action
         outcome = self.state.resolve_combat_action(core_action)
-        self._log(f"Бой ({action}): {_combat_message(outcome)}",
-                  style=STYLE_WARN)
+        self._log(
+            _I18N.tr(
+                "tui.combat.log", action=action,
+                message=_combat_message(outcome),
+            ),
+            style=STYLE_WARN,
+        )
         if outcome.destroyed:
-            self._log("КОРАБЛЬ УНИЧТОЖЕН!", style=STYLE_BAD + " bold")
+            self._log(
+                _I18N.tr("tui.gameover.log"), style=STYLE_BAD + " bold")
             self.notify(
                 _I18N.tr("tui.notify.destroyed"),
                 severity="error", timeout=10,
@@ -1933,7 +1974,7 @@ class EliteTUI(App):
     def _on_game_over(self, result) -> None:
         if result == "new":
             self._new_game()
-            self._log("Новая игра началась!", style="cyan")
+            self._log(_I18N.tr("tui.new_game"), style="cyan")
             self._refresh()
         elif result == "quit":
             self.action_quit()
@@ -1941,6 +1982,19 @@ class EliteTUI(App):
 # ── Точка входа ─────────────────────────────────────────────────────
 
 def main() -> int:
+    parser = argparse.ArgumentParser(
+        prog="elite_tui",
+        description="pyElite — TUI-версия (Textual).",
+    )
+    parser.add_argument(
+        "-l", "--lang",
+        default=TUI_LANG,
+        metavar="CODE",
+        choices=("en", "ru", "es"),
+        help="язык интерфейса: en, ru, es (по умолчанию: %(default)s)",
+    )
+    args = parser.parse_args()
+    _I18N.set_locale(args.lang)
     app = EliteTUI()
     try:
         app.run()
