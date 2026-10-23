@@ -17,6 +17,16 @@ TUI requires Textual (`pip install -e ".[tui]"`). UTF-8 encoding.
 
 Target group: gamers born in 1970 or earlier.
 
+## Screenshots
+
+TUI main window (English):
+
+![TUI main window (English)](assets/main_wnd_en.png)
+
+TUI main window (Spanish):
+
+![TUI main window (Spanish)](assets/main_wnd_es.png)
+
 ## Architecture
 
 Module dependencies (no cycles):
