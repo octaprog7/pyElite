@@ -299,6 +299,32 @@ backend, рендереры (CLI), аудио (null), TUI, линейный ре
 .venv/bin/python -m pytest   # тесты
 ```
 
+### Windows
+
+Текстовая версия полностью кроссплатформенная (Python 3.10+ со стандартной библиотекой; редактор строк использует `msvcrt` на Windows).
+Запуск - те же по функциям скрипты, что и `.sh`:
+
+```bat
+run_cli.bat                  @ интерактивный CLI (без внешних зависимостей)
+run_cli.bat --demo           @ демо-сценарий, затем выход
+run_tui.bat                  @ полноэкранный TUI (нужен textual)
+run_tui.bat --lang ru        @ TUI на русском
+bot_autopilot.bat            @ бесконечный прогон автопилота (Ctrl-C = стоп)
+```
+
+Скрипты используют `.venv\Scripts\python.exe`, если он есть, иначе `py`-лаунчер
+или `python` из PATH, и автоматически включают UTF-8 режим консоли
+(`chcp 65001` + `python -X utf8`), чтобы русские/испанские строки
+отображались правильно.
+
+Установка `textual` для TUI:
+
+```bat
+py -m pip install textual            @ или: py -m pip install -e ".[tui]"
+```
+
+Для TUI рекомендуется Windows Terminal (лучше цвета/UTF-8).
+
 Все файлы должны лежать в одной директории (рядом с
 `elite_galaxy_generator.py` и `elite_analytics.py`, которые требуются для
 импорта).

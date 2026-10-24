@@ -300,6 +300,32 @@ audio (null), TUI, line editor.
 .venv/bin/python -m pytest   # tests
 ```
 
+### Windows
+
+The text version is fully cross-platform (Python 3.10+ standard library; the
+line editor uses `msvcrt` on Windows). The same launchers as `.sh` scripts:
+
+```bat
+run_cli.bat                  @ interactive CLI (no external dependencies)
+run_cli.bat --demo           @ demo scenario, then exit
+run_tui.bat                  @ full-screen TUI (requires textual)
+run_tui.bat --lang ru        @ TUI in Russian
+bot_autopilot.bat            @ infinite autopilot runs (Ctrl-C to stop)
+```
+
+The launchers pick `.venv\Scripts\python.exe` if present, otherwise the `py`
+launcher / `python` from PATH, and enable the UTF-8 console mode
+(`chcp 65001` + `python -X utf8`) so ru/es text renders correctly.
+
+Install `textual` for the TUI:
+
+```bat
+py -m pip install textual            @ or: py -m pip install -e ".[tui]"
+```
+
+Windows Terminal is recommended for the TUI (better colors/UTF-8 than the
+legacy conhost window).
+
 All files must be in the same directory (next to `elite_galaxy_generator.py`
 and `elite_analytics.py`, which are required for imports).
 

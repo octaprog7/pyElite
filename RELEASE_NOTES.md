@@ -14,6 +14,7 @@
   ```
 
 - **Screenshots** of the TUI main window (EN/ES) added to the README.
+- **Windows launchers** — the text version is cross-platform; added `run_cli.bat`, `run_tui.bat` and `bot_autopilot.bat` (UTF-8 console, `.venv\Scripts\python.exe` auto-detection).
 
 ## Features
 
@@ -44,6 +45,14 @@
 ./run_tui.sh --lang en       # TUI in English
 ./bot_autoplay.sh            # infinite autopilot runs (Ctrl-C to stop)
 .venv/bin/python -m pytest   # 571 tests
+```
+
+On Windows the same launchers exist as `.bat` files:
+
+```bat
+run_cli.bat                  @ interactive CLI
+run_tui.bat --lang en        @ TUI in English
+bot_autopilot.bat            @ infinite autopilot runs (Ctrl-C to stop)
 ```
 
 ## License
