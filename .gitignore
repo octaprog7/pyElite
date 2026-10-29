@@ -59,3 +59,4 @@ build/
 *.swo
 .DS_Store
 Thumbs.db
+/pyElite_Linux.spec
